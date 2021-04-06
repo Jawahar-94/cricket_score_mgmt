@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cricket.scoremgmt.mapper.ScoreMapper">
+    <!--<cache />-->
+    <resultMap id="scoreResultMap" type="com.cricket.scoremgmt.domain.Team" >
+        <result column="Team_name" property="teamName"  />
+        <result column="Total_Runs" property="totalRuns"  />
+        <result column="Team_Average" property="teamAverage"  />
+        <collection property="batsmanList" javaType="ArrayList" ofType="com.cricket.scoremgmt.domain.Batsman">
+         <result column="Batsman_name" property="batsmanName"  />
+          <result column="Batsman_score" property="batsmanScore"  /> 
+          <result column="Team_name" property="teamName"  />  
+           <result column="BatsmanNo" property="batsmanNo"  />  
+        </collection>
+        
+    </resultMap>
+
+    <select id="findAll" resultMap="scoreResultMap">
+        select team.Team_name,bats.Batsman_name,bats.BatsmanNo,bats.Batsman_score,bats.Team_Name,team.Total_Runs,team.Team_Average FROM [mysqlTestDB].[dbo].[Team] team
+  left Outer join [mysqlTestDB].[dbo].[Batsman] bats on team.Team_name = bats.Team_name
+    </select>
+    
+    <resultMap id="batsmanResultMap" type="com.cricket.scoremgmt.domain.Batsman" >
+     
+         <result column="Batsman_name" property="batsmanName"  />
+          <result column="Batsman_score" property="batsmanScore"  /> 
+          <result column="Team_name" property="teamName"  />  
+          <result column="BatsmanNo" property="batsmanNo"  />      
+    </resultMap>
+    
+     <select id="getBatmanDetails" resultMap="batsmanResultMap">
+        select Batsman_name,Batsman_score,BatsmanNo,Team_Name from [mysqlTestDB].[dbo].[Batsman]
+    </select>
+    
+     <resultMap id="avgResultMap" type="com.cricket.scoremgmt.domain.Team" >
+        <result column="Team_name" property="teamName"  />
+        <result column="score" property="totalRuns"  />
+        <result column="average" property="teamAverage"  />
+        </resultMap>
+    
+    <select id="calculateAvg" resultMap="avgResultMap">
+     select Team_Name,sum(batsman_score) as score, avg(batsman_score)as average from [mysqlTestDB].[dbo].[Batsman]
+	      group by Team_Name
+    </select>
+    
+    
+    
+</mapper>
